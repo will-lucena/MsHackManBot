@@ -76,7 +76,7 @@ namespace RiddleBot
         {
             clearField();
 
-            string[] cells = input.Split(",");
+            string[] cells = input.Split(',');
             int x = 0;
             int y = 0;
 
@@ -84,7 +84,7 @@ namespace RiddleBot
             {
                 this.field[x, y] = cellString;
 
-                foreach (string cellPart in cellString.Split(";"))
+                foreach (string cellPart in cellString.Split(';'))
                 {
                     switch (cellPart[0])
                     {

@@ -28,7 +28,7 @@ namespace RiddleBot
 
                 if (line.Length == 0) continue;
 
-                string[] parts = line.Split(" ");
+                string[] parts = line.Split(' ');
                 switch (parts[0])
                 {
                     case "settings":
@@ -89,7 +89,7 @@ namespace RiddleBot
                         this.currentState.setTimePerMove(int.Parse(value));
                         break;
                     case "player_names":
-                        string[] playerNames = value.Split(",");
+                        string[] playerNames = value.Split(',');
                         foreach (string playerName in playerNames)
                         {
                             this.currentState.getPlayers().Add(playerName, new Player(playerName));
