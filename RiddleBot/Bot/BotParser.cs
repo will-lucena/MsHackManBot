@@ -22,7 +22,7 @@ namespace RiddleBot
          */
         public void run()
         {
-            while (Console.ReadLine() != "")
+            while (true)
             {
                 string line = Console.ReadLine();
 
@@ -58,7 +58,7 @@ namespace RiddleBot
                             }
                             else
                             {
-                                Console.WriteLine(MoveType.PASS.ToString().ToLower());
+                                Console.WriteLine("no_moves");
                             }
                         }
                         break;

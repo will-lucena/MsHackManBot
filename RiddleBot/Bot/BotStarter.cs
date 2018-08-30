@@ -37,21 +37,7 @@ namespace RiddleBot
             }
 
             //use IA here
-            //return IA.getMove(state.getField().getSnippetPositions(), state.getField().getValidMoveTypes(), state.getField().getMyPosition());
-            //*
-            // Get random but valid move type
-            MoveType randomMoveType = validMoveTypes[this.random.Next(validMoveTypes.Count)];
-
-            Player me = state.getPlayers()[state.getMyName()];
-
-            if (me.bombs <= 0) {
-                return new Move(randomMoveType); // No bombs available
-            }
-
-            int bombTicks = this.random.Next(4) + 2; // random number 2 - 5
-
-            return new Move(randomMoveType, bombTicks); // Drop bomb if available
-            /**/
+            return PathFinding.getMove(state.getField());
         }
 
         public static void Main(string[] args)

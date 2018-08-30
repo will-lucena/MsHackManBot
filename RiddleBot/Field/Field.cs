@@ -72,6 +72,13 @@ namespace RiddleBot
          * this.field. Also stores several interesting points.
          * @param input String input from the engine
          */
+
+        /*
+         * Field input example
+         * update game field S,.,.,x,.,.,.,.,.,.,.,.,.,.,.,x,.,.,S,.,x,.,x,.,x,x,x,x,.,x,x,x,x,.,x,.,x,.,.,x,.,.,.,x,.,.,.,.,.,.,.,x,.,.,.,x,.,.,x,x,x,.,x,.,x,x,x,x,x,.,x,.,x,x,x,.,.,x,.,.,.,x,.,.,.,.,.,.,.,x,.,.,.,x,.,.,.,.,x,.,x,.,x,x,.,x,x,.,x,.,x,.,.,.,x,.,x,x,.,.,.,x,x,.,x,x,.,.,.,x,x,.,x,Gl,.,x,x,P0,x,x,x,x,.,x,x,x,x,P1,x,x,.,Gr,x,.,x,x,.,.,.,.,.,C,.,.,.,.,.,x,x,.,x,.,.,.,x,.,x,x,x,x,x,x,x,x,x,.,x,.,.,.,.,x,.,.,.,.,.,.,x,x,x,.,.,.,.,.,.,x,.,.,x,.,x,x,.,x,.,.,C,.,.,x,.,x,x,.,x,.,.,x,.,x,x,.,x,x,x,x,x,x,x,.,x,x,.,x,.,.,x,.,x,x,.,x,.,.,.,.,.,x,.,x,x,.,x,.,S,.,.,.,.,.,.,.,x,x,x,.,.,.,.,.,.,.,S
+         */
+
+
         public void parseFromString(string input)
         {
             clearField();
@@ -215,6 +222,11 @@ namespace RiddleBot
                     !this.field[x,y].Contains(BLOCKED_FIELD);
         }
 
+        public bool isPointValid(int x, int y)
+        {
+            return !this.field[x, y].Contains(BLOCKED_FIELD);
+        }
+
         #region getters and setters
 
         public void setMyId(int id)
@@ -232,9 +244,19 @@ namespace RiddleBot
             this.width = width;
         }
 
+        public int getWidth()
+        {
+            return this.width;
+        }
+
         public void setHeight(int height)
         {
             this.height = height;
+        }
+
+        public int getHeight()
+        {
+            return this.height;
         }
 
         public Point getMyPosition()
