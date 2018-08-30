@@ -10,7 +10,8 @@ namespace RiddleBot
 
         public BotParser()
         {
-            Console.SetIn(new StreamReader((Console.OpenStandardInput(512))));
+            StreamReader sr = new StreamReader(Console.OpenStandardInput(512));
+            Console.SetIn(sr);
             this.bot = new BotStarter();
             this.currentState = new BotState();
         }
@@ -22,7 +23,7 @@ namespace RiddleBot
          */
         public void run()
         {
-            while (Console.ReadLine() != "")
+            while (true)
             {
                 string line = Console.ReadLine();
 
@@ -51,14 +52,15 @@ namespace RiddleBot
                         }
                         else if (parts[1].Equals("move"))
                         {  // return move
-                            Move move = this.bot.doMove(this.currentState);
+                            Move move = null;
+                            move = this.bot.doMove(this.currentState);
                             if (move != null)
                             {
                                 Console.WriteLine(move.ToString());
                             }
                             else
                             {
-                                Console.WriteLine(MoveType.PASS.ToString().ToLower());
+                                Console.WriteLine("no_moves");
                             }
                         }
                         break;
