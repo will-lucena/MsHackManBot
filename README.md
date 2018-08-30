@@ -1,4 +1,4 @@
-# A C# starter bot to MSHackman competition from Riddles.io based on him Java starter bot one
+# A C# starter bot to MSHackman competition from Riddles.io based on Java starter bot code
 
 ## How To
 
