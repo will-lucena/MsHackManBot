@@ -4,6 +4,254 @@ using System.Text;
 
 namespace RiddleBot
 {
+
+    #region secondIA attempt
+
+    public class IA
+    {
+        private static Point oldTarget = null;
+        private static int horizontalDifference;
+        private static int verticalDifference;
+
+        public static Move getMove(List<Point> snippetPositions, List<MoveType> validMoveTypes, Point myPosition)
+        {
+            //already have target
+            if (snippetPositions.Contains(oldTarget))
+            {
+                horizontalDifference = oldTarget.x - myPosition.x;
+                verticalDifference = oldTarget.y - myPosition.y;
+                return chaseTarget(myPosition, validMoveTypes);
+            }
+            else if (!(snippetPositions.Count == 0))
+            {
+                oldTarget = snippetPositions[0];
+                horizontalDifference = oldTarget.x - myPosition.x;
+                verticalDifference = oldTarget.y - myPosition.y;
+                return chaseTarget(myPosition, validMoveTypes);
+            }
+            return null;
+        }
+
+        private static Move chaseTarget(Point myPosition, List<MoveType> validMoveTypes)
+        {
+            if (validMoveTypes.Contains(MoveType.UP) && verticalDifference > 0)
+            {
+                verticalDifference--;
+                return new Move(MoveType.UP);
+            }
+
+            if (validMoveTypes.Contains(MoveType.DOWN) && verticalDifference < 0)
+            {
+                verticalDifference++;
+                return new Move(MoveType.DOWN);
+            }
+
+            if (validMoveTypes.Contains(MoveType.RIGHT) && horizontalDifference > 0)
+            {
+                horizontalDifference--;
+                return new Move(MoveType.RIGHT);
+            }
+
+            if (validMoveTypes.Contains(MoveType.LEFT) && horizontalDifference < 0)
+            {
+                horizontalDifference++;
+                return new Move(MoveType.LEFT);
+            }
+            return new Move(MoveType.PASS);
+        }
+    }
+
+
+    #endregion
+
+    #region aStarIA attempt
+    /*
+    public class Node
+    {
+        public int x { get; set; }
+        public int y { get; set; }
+        public int cost { get; set; }
+
+        public Node(int x, int y, int currentCost)
+        {
+            this.x = x;
+            this.y = y;
+            this.cost = currentCost;
+        }
+
+        public Node(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+            this.cost = 0;
+        }
+
+        public Move toMove(Node other)
+        {
+            if (other.x > this.x && other.y == this.y)
+            {
+                return new Move(MoveType.LEFT);
+            }
+
+            if (other.x < this.x && other.y == this.y)
+            {
+                return new Move(MoveType.RIGHT);
+            }
+
+            if (other.y > this.y && other.x == this.x)
+            {
+                return new Move(MoveType.DOWN);
+            }
+
+            if (other.y < this.y && other.x == this.x)
+            {
+                return new Move(MoveType.UP);
+            }
+            return null;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+            Node other = (Node)obj;
+            if (other.x != this.x)
+            {
+                return false;
+            }
+            if (other.y != this.y)
+            {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public class AStar
+    {
+        public static Node aStarAlgorithm(Node initial, Node target, Field field)
+        {
+            List<Node> openNodes = new List<Node>();
+            List<Node> closeNodes = new List<Node>();
+
+            openNodes.Add(initial);
+            Node actual;
+
+            while (openNodes.Count > 0)
+            {
+                actual = openNodes[0];
+                openNodes.RemoveAt(0);
+                closeNodes.Add(actual);
+
+                if (actual == target)
+                {
+                    return actual;
+                }
+                else
+                {
+                    List<Node> newNodes = getChilds(actual, openNodes, closeNodes, field);
+                    openNodes.AddRange(newNodes);
+
+                    openNodes.Sort((Node a, Node b) => {
+                        float aInfluence = p * fitnessFunction(a, target) + (1 - p) * a.cost;
+                        float bInfluence = p * fitnessFunction(b, target) + (1 - p) * b.cost;
+
+                        if (aInfluence > bInfluence)
+                        {
+                            return (int)aInfluence;
+                        }
+                        return (int)bInfluence;
+                    });
+                }
+            }
+            return null;
+        }
+
+        const float p = 0.5f; // Value between 0 and 1
+
+        private static float fitnessFunction(Node a, Node target)
+        {
+            if (a == target)
+            {
+                return 0;
+            }
+            return 1;
+        }
+
+        private static List<Node> getChilds(Node actual, List<Node> openNodes, List<Node> closedNodes, Field field)
+        {
+            List<Node> childs = getPosibilities(actual, field);
+            for (int i = 0; i < childs.Count; i++)
+            {
+                for (int k = 0; k < openNodes.Count; k++)
+                {
+                    if (openNodes[k] == childs[i])
+                    {
+                        if (childs[i].cost > openNodes[k].cost)
+                        {
+                            childs.RemoveAt(i);
+                        }
+                        break;
+                    }
+                }
+            }
+            for (int i = 0; i < childs.Count; i++)
+            {
+                for (int k = 0; k < closedNodes.Count; k++)
+                {
+                    if (closedNodes[k] == childs[i])
+                    {
+                        if (childs[i].cost > closedNodes[k].cost)
+                        {
+                            childs.RemoveAt(i);
+                        }
+                        break;
+                    }
+
+                }
+            }
+            return childs;
+        }
+
+        private static List<Node> getPosibilities(Node actual, Field field)
+        {
+            List<Node> nodes = new List<Node>();
+
+            List<MoveType> availableMoves = field.getValidMoveTypes(actual.x, actual.y);
+
+            foreach(MoveType move in availableMoves)
+            {
+                switch (move)
+                {
+                    case MoveType.UP:
+                        nodes.Add(new Node(actual.x, actual.y + 1, actual.cost + 1));
+                        break;
+                    case MoveType.DOWN:
+                        nodes.Add(new Node(actual.x, actual.y - 1, actual.cost + 1));
+                        break;
+                    case MoveType.RIGHT:
+                        nodes.Add(new Node(actual.x + 1, actual.y, actual.cost + 1));
+                        break;
+                    case MoveType.LEFT:
+                        nodes.Add(new Node(actual.x - 1, actual.y, actual.cost + 1));
+                        break;
+                }
+            }
+
+            return nodes;
+        }
+    }
+    /**/
+    #endregion
+
+    #region firstIA attempt
+    /*
     public static class PathFinding
     {
         private static Field field;
@@ -96,4 +344,7 @@ namespace RiddleBot
             return value > bound || value < 0;
         }
     }
+    /**/
+
+    #endregion
 }

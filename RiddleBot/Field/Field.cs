@@ -72,13 +72,6 @@ namespace RiddleBot
          * this.field. Also stores several interesting points.
          * @param input String input from the engine
          */
-
-        /*
-         * Field input example
-         * update game field S,.,.,x,.,.,.,.,.,.,.,.,.,.,.,x,.,.,S,.,x,.,x,.,x,x,x,x,.,x,x,x,x,.,x,.,x,.,.,x,.,.,.,x,.,.,.,.,.,.,.,x,.,.,.,x,.,.,x,x,x,.,x,.,x,x,x,x,x,.,x,.,x,x,x,.,.,x,.,.,.,x,.,.,.,.,.,.,.,x,.,.,.,x,.,.,.,.,x,.,x,.,x,x,.,x,x,.,x,.,x,.,.,.,x,.,x,x,.,.,.,x,x,.,x,x,.,.,.,x,x,.,x,Gl,.,x,x,P0,x,x,x,x,.,x,x,x,x,P1,x,x,.,Gr,x,.,x,x,.,.,.,.,.,C,.,.,.,.,.,x,x,.,x,.,.,.,x,.,x,x,x,x,x,x,x,x,x,.,x,.,.,.,.,x,.,.,.,.,.,.,x,x,x,.,.,.,.,.,.,x,.,.,x,.,x,x,.,x,.,.,C,.,.,x,.,x,x,.,x,.,.,x,.,x,x,.,x,x,x,x,x,x,x,.,x,x,.,x,.,.,x,.,x,x,.,x,.,.,.,.,.,x,.,x,x,.,x,.,S,.,.,.,.,.,.,.,x,x,x,.,.,.,.,.,.,.,S
-         */
-
-
         public void parseFromString(string input)
         {
             clearField();
@@ -194,6 +187,26 @@ namespace RiddleBot
             List<MoveType> validMoveTypes = new List<MoveType>();
             int myX = this.myPosition.x;
             int myY = this.myPosition.y;
+
+            Point up = new Point(myX, myY - 1);
+            Point down = new Point(myX, myY + 1);
+            Point left = new Point(myX - 1, myY);
+            Point right = new Point(myX + 1, myY);
+
+            if (isPointValid(up)) validMoveTypes.Add(MoveType.UP);
+            if (isPointValid(down)) validMoveTypes.Add(MoveType.DOWN);
+            if (isPointValid(left)) validMoveTypes.Add(MoveType.LEFT);
+            if (isPointValid(right)) validMoveTypes.Add(MoveType.RIGHT);
+
+            return validMoveTypes;
+        }
+
+        public List<MoveType> getValidMoveTypes(int posX, int posY)
+        {
+            List<MoveType> validMoveTypes = new List<MoveType>();
+
+            int myX = posX;
+            int myY = posY;
 
             Point up = new Point(myX, myY - 1);
             Point down = new Point(myX, myY + 1);
