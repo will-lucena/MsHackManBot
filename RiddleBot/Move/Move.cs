@@ -2,10 +2,13 @@
 {
     public class Move
     {
-        private MoveType moveType = MoveType.PASS;
+        public MoveType moveType {get; set;}
         private int bombTicks;
 
-        public Move() { }
+        public Move()
+        {
+            moveType = MoveType.PASS;
+        }
 
         public Move(MoveType moveType)
         {

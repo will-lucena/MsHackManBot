@@ -4,60 +4,155 @@ using System.Text;
 
 namespace RiddleBot
 {
+    public enum MoveQuality
+    {
+        MAX,
+        USEFULL
+    }
 
     #region secondIA attempt
 
     public class IA
     {
-        private static Point oldTarget = null;
-        private static int horizontalDifference;
-        private static int verticalDifference;
+        private static Point lastPosition;
 
         public static Move getMove(List<Point> snippetPositions, List<MoveType> validMoveTypes, Point myPosition)
         {
-            //already have target
-            if (snippetPositions.Contains(oldTarget))
-            {
-                horizontalDifference = oldTarget.x - myPosition.x;
-                verticalDifference = oldTarget.y - myPosition.y;
-                return chaseTarget(myPosition, validMoveTypes);
-            }
-            else if (!(snippetPositions.Count == 0))
-            {
-                oldTarget = snippetPositions[0];
-                horizontalDifference = oldTarget.x - myPosition.x;
-                verticalDifference = oldTarget.y - myPosition.y;
-                return chaseTarget(myPosition, validMoveTypes);
-            }
-            return null;
+            Point target = getShortestSnippet(snippetPositions, myPosition);
+            int horizontalDifference = target.x - myPosition.x;
+            int verticalDifference = target.y - myPosition.y;
+            return chaseTarget(myPosition, validMoveTypes, verticalDifference, horizontalDifference);
         }
 
-        private static Move chaseTarget(Point myPosition, List<MoveType> validMoveTypes)
+        private static Point getShortestSnippet(List<Point> snippetPositions, Point myPosition)
         {
-            if (validMoveTypes.Contains(MoveType.UP) && verticalDifference > 0)
+            int minDist = int.MaxValue;
+            Point currentShortest = null;
+            foreach (Point point in snippetPositions)
             {
-                verticalDifference--;
-                return new Move(MoveType.UP);
+                var dist = Math.Sqrt(Math.Pow((point.x - myPosition.x), 2) + Math.Pow((point.y - myPosition.y), 2));
+
+                if (dist < minDist)
+                {
+                    currentShortest = point;
+                }
+            }
+            return currentShortest;
+        }
+
+        private static Move chaseTarget(Point myPosition, List<MoveType> validMoveTypes, int verticalDifference, int horizontalDifference)
+        {
+            Dictionary<MoveQuality, List<Move>> moves = new Dictionary<MoveQuality, List<Move>>();
+
+            moves[MoveQuality.MAX] = new List<Move>();
+            moves[MoveQuality.USEFULL] = new List<Move>();
+
+            foreach(MoveType move in validMoveTypes)
+            {
+                switch (move)
+                {
+                    case MoveType.UP:
+                        if (verticalDifference < 0)
+                        {
+                            moves[MoveQuality.MAX].Add(new Move(MoveType.UP));
+                        }
+                        else
+                        {
+                            moves[MoveQuality.USEFULL].Add(new Move(MoveType.UP));
+                        }
+                        break;
+                    case MoveType.RIGHT:
+                        if (horizontalDifference > 0)
+                        {
+                            moves[MoveQuality.MAX].Add(new Move(MoveType.RIGHT));
+                        }
+                        else
+                        {
+                            moves[MoveQuality.USEFULL].Add(new Move(MoveType.RIGHT));
+                        }
+                        break;
+                    case MoveType.DOWN:
+                        if (verticalDifference > 0)
+                        {
+                            moves[MoveQuality.MAX].Add(new Move(MoveType.DOWN));
+                        }
+                        else
+                        {
+                            moves[MoveQuality.USEFULL].Add(new Move(MoveType.DOWN));
+                        }
+                        break;
+                    case MoveType.LEFT:
+                        if (horizontalDifference < 0)
+                        {
+                            moves[MoveQuality.MAX].Add(new Move(MoveType.LEFT));
+                        }
+                        else
+                        {
+                            moves[MoveQuality.USEFULL].Add(new Move(MoveType.LEFT));
+                        }
+                        break;
+                }
             }
 
-            if (validMoveTypes.Contains(MoveType.DOWN) && verticalDifference < 0)
+            if (moves[MoveQuality.MAX].Count > 0)
             {
-                verticalDifference++;
-                return new Move(MoveType.DOWN);
+                foreach (Move move in moves[MoveQuality.MAX])
+                {
+                    switch (move.moveType)
+                    {
+                        case MoveType.UP:
+                            if (verticalDifference < 0)
+                            {
+                                verticalDifference++;
+                                return move;
+                            }
+                            break;
+                        case MoveType.RIGHT:
+                            if (horizontalDifference > 0)
+                            {
+                                horizontalDifference--;
+                                return move;
+                            }
+                            break;
+                        case MoveType.DOWN:
+                            if (verticalDifference > 0)
+                            {
+                                verticalDifference--;
+                                return move;
+                            }
+                            break;
+                        case MoveType.LEFT:
+                            if (horizontalDifference < 0)
+                            {
+                                horizontalDifference++;
+                                return move;
+                            }
+                            break;
+                    }
+                }
             }
-
-            if (validMoveTypes.Contains(MoveType.RIGHT) && horizontalDifference > 0)
+            else if (moves[MoveQuality.USEFULL].Count > 0)
             {
-                horizontalDifference--;
-                return new Move(MoveType.RIGHT);
+                foreach (Move move in moves[MoveQuality.USEFULL])
+                {
+                    switch (move.moveType)
+                    {
+                        case MoveType.UP:
+                            verticalDifference++;
+                            return move;
+                        case MoveType.RIGHT:
+                            horizontalDifference--;
+                            return move;
+                        case MoveType.DOWN:
+                            verticalDifference--;
+                            return move;
+                        case MoveType.LEFT:
+                            horizontalDifference++;
+                            return move;
+                    }
+                }
             }
-
-            if (validMoveTypes.Contains(MoveType.LEFT) && horizontalDifference < 0)
-            {
-                horizontalDifference++;
-                return new Move(MoveType.LEFT);
-            }
-            return new Move(MoveType.PASS);
+            return null;
         }
     }
 
