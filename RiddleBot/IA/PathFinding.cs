@@ -14,14 +14,52 @@ namespace RiddleBot
 
     public class IA
     {
-        private static Point lastPosition;
+        private static Move lastMovement = null;
 
         public static Move getMove(List<Point> snippetPositions, List<MoveType> validMoveTypes, Point myPosition)
         {
+            if (lastMovement != null)
+            {
+                removeLastPositionFromValidMove(ref validMoveTypes, myPosition);
+            }
             Point target = getShortestSnippet(snippetPositions, myPosition);
             int horizontalDifference = target.x - myPosition.x;
             int verticalDifference = target.y - myPosition.y;
-            return chaseTarget(myPosition, validMoveTypes, verticalDifference, horizontalDifference);
+            var move = chaseTarget(myPosition, validMoveTypes, verticalDifference, horizontalDifference);
+            lastMovement = move;
+            
+            return move;
+        }
+
+        private static void removeLastPositionFromValidMove(ref List<MoveType> validMoveTypes, Point currentPosition)
+        {
+            switch (lastMovement.moveType)
+            {
+                case MoveType.UP:
+                    if (validMoveTypes.Contains(MoveType.DOWN))
+                    {
+                        validMoveTypes.Remove(MoveType.DOWN);
+                    }
+                    break;
+                case MoveType.RIGHT:
+                    if (validMoveTypes.Contains(MoveType.LEFT))
+                    {
+                        validMoveTypes.Remove(MoveType.LEFT);
+                    }
+                    break;
+                case MoveType.DOWN:
+                    if (validMoveTypes.Contains(MoveType.UP))
+                    {
+                        validMoveTypes.Remove(MoveType.UP);
+                    }
+                    break;
+                case MoveType.LEFT:
+                    if (validMoveTypes.Contains(MoveType.RIGHT))
+                    {
+                        validMoveTypes.Remove(MoveType.RIGHT);
+                    }
+                    break;
+            }
         }
 
         private static Point getShortestSnippet(List<Point> snippetPositions, Point myPosition)
