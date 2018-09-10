@@ -38,7 +38,8 @@ namespace RiddleBot
             try
             {
                 this.field = new string[this.width, this.height];
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.Error.WriteLine(e.StackTrace);
                 throw new Exception("Error: trying to initialize field while field " + "settings have not been parsed yet.");
@@ -232,7 +233,7 @@ namespace RiddleBot
             int y = point.y;
 
             return x >= 0 && x < this.width && y >= 0 && y < this.height &&
-                    !this.field[x,y].Contains(BLOCKED_FIELD);
+                    !this.field[x, y].Contains(BLOCKED_FIELD);
         }
 
         public bool isPointValid(int x, int y)

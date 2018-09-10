@@ -27,7 +27,7 @@ namespace RiddleBot
             int verticalDifference = target.y - myPosition.y;
             var move = chaseTarget(myPosition, validMoveTypes, verticalDifference, horizontalDifference);
             lastMovement = move;
-            
+
             return move;
         }
 
@@ -85,7 +85,7 @@ namespace RiddleBot
             moves[MoveQuality.MAX] = new List<Move>();
             moves[MoveQuality.USEFULL] = new List<Move>();
 
-            foreach(MoveType move in validMoveTypes)
+            foreach (MoveType move in validMoveTypes)
             {
                 switch (move)
                 {

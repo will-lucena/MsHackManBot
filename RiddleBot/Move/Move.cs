@@ -2,7 +2,7 @@
 {
     public class Move
     {
-        public MoveType moveType {get; set;}
+        public MoveType moveType { get; set; }
         private int bombTicks;
 
         public Move()

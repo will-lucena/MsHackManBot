@@ -45,7 +45,7 @@ namespace RiddleBot
 
             return AStar.aStarAlgorithm(current, target, field).toMove(current);
             /**/
-            
+
             /*
             // Get random but valid move type
             MoveType randomMoveType = validMoveTypes[this.random.Next(validMoveTypes.Count)];
